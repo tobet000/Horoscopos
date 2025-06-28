@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Horóscopos Lobavle</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #141E30;
+      color: #fff;
+      text-align: center;
+      background-image: radial-gradient(#ffffff22 1px, transparent 1px),
+                        radial-gradient(#ffffff11 1px, transparent 1px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      animation: estrellas 60s linear infinite;
+    }
+
+    @keyframes estrellas {
+      0% { background-position: 0 0, 20px 20px; }
+      100% { background-position: 1000px 1000px, 1020px 1020px; }
+    }
+
+    .container {
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    select {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-top: 1rem;
+    }
+
+    .resultado {
+      margin-top: 2rem;
+      background-color: rgba(255,255,255,0.1);
+      padding: 1.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    }
+
+    .frase-final {
+      margin-top: 3rem;
+      font-size: 1.3rem;
+      font-style: italic;
+      opacity: 0.9;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✨ Horóscopos Lobavle ✨</h1>
+
+    <select id="signo">
+      <option value="">Selecciona tu signo</option>
+      <option value="aries">♈ Aries</option>
+      <option value="taurus">♉ Tauro</option>
+      <option value="gemini">♊ Géminis</option>
+      <option value="cancer">♋ Cáncer</option>
+      <option value="leo">♌ Leo</option>
+      <option value="virgo">♍ Virgo</option>
+      <option value="libra">♎ Libra</option>
+      <option value="scorpio">♏ Escorpio</option>
+      <option value="sagittarius">♐ Sagitario</option>
+      <option value="capricorn">♑ Capricornio</option>
+      <option value="aquarius">♒ Acuario</option>
+      <option value="pisces">♓ Piscis</option>
+    </select>
+
+    <div class="resultado" id="resultado">
+      <p>Selecciona tu signo para ver el horóscopo de hoy ✨</p>
+    </div>
+
+    <div class="frase-final">🌞 Sonríele a la vida 🌞</div>
+  </div>
+
+  <script>
+    const signoSelect = document.getElementById('signo');
+    const resultadoDiv = document.getElementById('resultado');
+
+    signoSelect.addEventListener('change', () => {
+      const signo = signoSelect.value;
+      if (!signo) return;
+
+      resultadoDiv.innerHTML = '<p>Consultando las estrellas... 🔮</p>';
+
+      fetch(`https://api.allorigins.win/raw?url=https://aztro.sameerkumar.website/?sign=${signo}&day=today`, {
+        method: 'POST'
+      })
+        .then(response => response.json())
+        .then(data => {
+          resultadoDiv.innerHTML = `
+            <p><strong>${signo.charAt(0).toUpperCase() + signo.slice(1)}</strong></p>
+            <p>${data.description}</p>
+            <p>💫 Estado de ánimo: ${data.mood}</p>
+            <p>❤️ Amor: ${data.compatibility}</p>
+            <p>🎯 Color: ${data.color}</p>
+          `;
+        })
+        .catch(error => {
+          console.error(error);
+          resultadoDiv.innerHTML = `<p>Algo salió mal al consultar el horóscopo. Intenta de nuevo más tarde 🕯️</p>`;
+        });
+    });
+  </script>
+</body>
+</html>
