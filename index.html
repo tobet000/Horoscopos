@@ -2,224 +2,193 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Juego de Reflejos</title>
+  <title>Veladora por Gaza</title>
   <style>
     body {
-      background-color: #111;
-      color: #fff;
+      margin: 0;
+      background: radial-gradient(circle at center, #000000 0%, #0c0c22 100%);
+      color: white;
+      font-family: monospace;
       text-align: center;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
+      padding: 30px 20px;
     }
-
-    .mensaje-anuncio {
-      font-size: 0.7rem;
-      color: #ccc;
-      background: #222;
-      padding: 6px 10px;
-      margin: 0;
-      border-bottom: 1px solid #444;
-      font-style: italic;
+    .cosmic-frame {
+      max-width: 480px;
+      margin: auto;
+      padding: 25px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      box-shadow: 0 0 20px #6cf, 0 0 40px #33aaff44;
+      background: linear-gradient(145deg, #000011, #0a0a1a);
     }
-
-    h1 {
+    h1 { margin-bottom: 8px; }
+    #mensaje { margin-bottom: 20px; font-size: 1.1em; }
+    .vela-container { display: inline-block; margin: 20px auto; }
+    .pixel-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 6px);
+      grid-gap: 1px;
+      justify-content: center;
+    }
+    .pixel { width: 6px; height: 6px; background-color: transparent; }
+    .llama { background-color: transparent; }
+    .llama.encendida { animation: flame 1s infinite alternate; }
+    @keyframes flame {
+      0% { background-color: #ff9900; }
+      100% { background-color: #ffff66; }
+    }
+    .cera { background-color: #eee; }
+    .base { background-color: #999; }
+    #bandera {
+      width: 100px;
       margin-top: 30px;
-    }
-
-    #container-panel {
-      position: relative;
-    }
-
-    #panel {
-      width: 90vw;
-      height: 60vh;
-      margin: 30px auto;
-      background-color: red;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    #boton-reintentar, #boton-whatsapp {
+      animation: flotar 4s ease-in-out infinite;
       display: none;
-      margin: 15px auto 10px;
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: bold;
+    }
+    @keyframes flotar {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #111;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background-color: #333; }
+    .social {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px;
+      font-size: 0.9em;
+      text-decoration: none;
+      color: white;
+      background-color: #222;
+      border: 1px solid #444;
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+    .social img { height: 20px; width: 20px; }
+    #contador { margin-top: 20px; color: #ccc; }
+    #oracion-privada { margin-top: 20px; font-style: italic; color: #fffd; }
+    #esperanza {
+      margin-top: 25px;
+      font-style: italic;
+      font-size: 0.95em;
+      color: #aaa;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 80%;
+      max-width: 400px;
+      margin-top: 25px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    #boton-reintentar {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, #ffd700, #ff6a00);
-      color: #000;
-      box-shadow: 0 0 15px #ff0, 0 0 30px #f80;
-      animation: parpadeo 1s infinite, rebote 1s infinite alternate;
-      z-index: 10;
-    }
-
-    #boton-whatsapp {
-      background-color: #25D366;
-      color: #fff;
-    }
-
-    @keyframes parpadeo {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
-
-    @keyframes rebote {
-      0% { transform: translate(-50%, -52%) scale(1); }
-      100% { transform: translate(-50%, -48%) scale(1.05); }
-    }
-
-    #resultado, #puntuacion {
-      margin: 10px 0;
-    }
-
-    #imagen-vikingo {
-      max-width: 200px;
-      margin-top: 10px;
-      display: none;
-      border-radius: 10px;
-      border: 2px solid #ccc;
-      box-shadow: 0 0 10px #000;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body>
+  <div class="cosmic-frame">
+    <h1>🕯️ Veladora por Gaza</h1>
+    <div id="mensaje">Dedícale una oración al pueblo de Gaza 🇵🇸</div>
 
-  <p class="mensaje-anuncio">
-    😊 Si se abre una pestaña o anuncio, simplemente ciérralo o aprieta atrás para seguir disfrutando del juego. ¡Gracias por tu paciencia!
-  </p>
+    <div class="vela-container">
+      <div class="pixel-grid" id="veladora">
+        <div class="pixel llama"></div><div></div><div class="pixel llama"></div><div></div><div class="pixel llama"></div>
+        <div></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div></div>
+        <div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div>
 
-  <h1>Haz clic cuando el panel se vuelva VERDE</h1>
+        <!-- 30 filas de cera -->
+        <!-- Copia esta línea 30 veces para que quede larga -->
+        <div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div>
+        <!-- ...continúa repitiendo según desees... -->
 
-  <div id="container-panel">
-    <div id="panel"></div>
-    <button id="boton-reintentar" onclick="mostrarAnuncioYReiniciar()">💪 No te rindas, consigue el 10</button>
+        <div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div>
+      </div>
+    </div>
+
+    <button id="encender" onclick="encenderVeladora()">Encender veladora</button>
+    <div id="contador">Estas personas han encendido su veladora: <span id="conteo">0</span></div>
+
+    <input type="text" id="inputOracion" placeholder="Escribe tu oración..." maxlength="120"><br>
+    <button id="publicar">Guardar oración</button>
+    <div id="oracion-privada"></div>
+
+    <img id="bandera" src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Bandera Palestina">
+
+    <div id="esperanza">"Una luz encendida es más fuerte que la oscuridad. Que esta llama sea memoria, resistencia y esperanza."</div>
+
+    <p style="font-size: 0.85em; color: #aaa; margin-top: 25px;">
+      Si se abre un anuncio, ciérralo o dale click atrás para volver a la página
+    </p>
+
+    <div style="margin-top: 10px;">
+      <a class="social" href="#" onclick="compartir('facebook')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook"> Compartir
+      </a>
+      <a class="social" href="#" onclick="compartir('whatsapp')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"> Compartir
+      </a>
+    </div>
   </div>
-
-  <p id="resultado"></p>
-  <p id="puntuacion"></p>
-
-  <img id="imagen-vikingo" src="" alt="Reacción del vikingo" />
-
-  <br>
-  <button id="boton-whatsapp" onclick="compartirEnWhatsApp()">📲 Compartir en WhatsApp</button>
-
-  <!-- Música medieval -->
-  <audio id="musica" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9c4f3e3f3e.mp3" type="audio/mpeg">
-    Tu navegador no soporta audio HTML5.
-  </audio>
-
-  <!-- Anuncio tipo pump -->
-  <script id="pump-script" type="text/javascript" data-src="//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js"></script>
-
   <script>
-    const panel = document.getElementById("panel");
-    const boton = document.getElementById("boton-reintentar");
-    const botonWhatsapp = document.getElementById("boton-whatsapp");
-    const resultado = document.getElementById("resultado");
-    const puntuacion = document.getElementById("puntuacion");
-    const imgVikingo = document.getElementById("imagen-vikingo");
-    const musica = document.getElementById("musica");
+  const llamaPixeles = document.querySelectorAll('.llama');
+  const bandera = document.getElementById('bandera');
+  let encendida = false;
+  let conteo = localStorage.getItem('conteoVelas') || 0;
+  let oracion = localStorage.getItem('oracionPrivada') || '';
+  document.getElementById('conteo').textContent = conteo;
+  document.getElementById('oracion-privada').textContent = oracion ? `"${oracion}"` : '';
 
-    let puedeClic = false;
-    let tiempoInicio;
-    let timeoutID;
-    let ultimoPuntaje = 0;
-    let musicaIniciada = false;
+  function encenderVeladora() {
+    if (encendida) return;
+    encendida = true;
 
-    document.body.addEventListener("click", () => {
-      if (!musicaIniciada) {
-        musica.play().catch(() => {});
-        musica.volume = 0.4;
-        musicaIniciada = true;
-      }
-    }, { once: true });
-
-    function calcularPuntuacion(ms) {
-      if (ms < 200) return 10;
-      if (ms < 250) return 9;
-      if (ms < 300) return 8;
-      if (ms < 400) return 7;
-      if (ms < 500) return 6;
-      if (ms < 600) return 5;
-      if (ms < 700) return 4;
-      if (ms < 800) return 3;
-      if (ms < 1000) return 2;
-      return 1;
-    }
-
-    function iniciarJuego() {
-      clearTimeout(timeoutID);
-      panel.style.backgroundColor = "red";
-      resultado.textContent = "Espera que se ponga verde...";
-      puntuacion.textContent = "";
-      boton.style.display = "none";
-      botonWhatsapp.style.display = "none";
-      imgVikingo.style.display = "none";
-      puedeClic = false;
-
-      timeoutID = setTimeout(() => {
-        panel.style.backgroundColor = "green";
-        tiempoInicio = Date.now();
-        puedeClic = true;
-      }, Math.random() * 3000 + 1000);
-    }
-
-    panel.addEventListener("click", () => {
-      if (!puedeClic) {
-        resultado.textContent = "¡Muy pronto! Espera al verde.";
-        mostrarReacciones(0);
-      } else {
-        const tiempo = Date.now() - tiempoInicio;
-        const puntos = calcularPuntuacion(tiempo);
-        resultado.textContent = `¡Tu tiempo fue: ${tiempo} ms!`;
-        puntuacion.textContent = `🏅 Puntuación: ${puntos}/10`;
-        ultimoPuntaje = puntos;
-        puedeClic = false;
-        mostrarReacciones(puntos);
-      }
+    llamaPixeles.forEach((pixel, i) => {
+      setTimeout(() => pixel.classList.add('encendida'), i * 100);
     });
 
-    function mostrarReacciones(puntos) {
-      boton.style.display = "block";
-      botonWhatsapp.style.display = "inline-block";
-      imgVikingo.style.display = "block";
+    bandera.style.display = 'block';
+    conteo++;
+    localStorage.setItem('conteoVelas', conteo);
+    document.getElementById('conteo').textContent = conteo;
 
-      if (puntos >= 9) {
-        imgVikingo.src = "https://images.pexels.com/photos/17794822/pexels-photo-17794822.jpeg?auto=compress&cs=tinysrgb&h=320";
-      } else {
-        imgVikingo.src = "https://images.pexels.com/photos/5019060/pexels-photo-5019060.jpeg?auto=compress&cs=tinysrgb&h=320";
-      }
+    const adScript = document.createElement('script');
+    adScript.type = 'text/javascript';
+    adScript.src = '//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js';
+    document.body.appendChild(adScript);
+  }
+
+  document.getElementById('publicar').addEventListener('click', () => {
+    const input = document.getElementById('inputOracion');
+    const texto = sanitize(input.value.trim());
+    if (!texto) return;
+    localStorage.setItem('oracionPrivada', texto);
+    document.getElementById('oracion-privada').textContent = `"${texto}"`;
+    input.value = '';
+  });
+
+  function sanitize(str) {
+    return str.replace(/[&<>"']/g, s => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[s]));
+  }
+
+  function compartir(plataforma) {
+    const url = window.location.href;
+    if (plataforma === 'facebook') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+    } else if (plataforma === 'whatsapp') {
+      window.open(`https://wa.me/?text=${encodeURIComponent("Enciendo una veladora por Gaza: " + url)}`, '_blank');
     }
-
-    function mostrarAnuncioYReiniciar() {
-      const script = document.getElementById("pump-script");
-      if (!script.src) {
-        script.src = script.getAttribute("data-src");
-      }
-      iniciarJuego();
-    }
-
-    function compartirEnWhatsApp() {
-      const url = encodeURIComponent(window.location.href);
-      const texto = `¡Saqué ${ultimoPuntaje}/10 en el Reto de Reflejos! 💥 ¿Puedes superarme?\nJuega aquí: ${url}`;
-      const enlace = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-      window.open(enlace, "_blank");
-    }
-
-    window.onload = iniciarJuego;
-  </script>
-
+  }
+</script>
 </body>
 </html>
