@@ -15,10 +15,10 @@
     }
 
     .mensaje-anuncio {
-      font-size: 0.95rem;
+      font-size: 0.7rem;
       color: #ccc;
       background: #222;
-      padding: 10px 15px;
+      padding: 6px 10px;
       margin: 0;
       border-bottom: 1px solid #444;
       font-style: italic;
@@ -82,12 +82,17 @@
   </p>
 
   <h1>Haz clic cuando el panel se vuelva VERDE</h1>
+
   <div id="container-panel">
     <div id="panel"></div>
-    <button id="boton-reintentar">💪 No te rindas, consigue el 10</button>
+    <button id="boton-reintentar" onclick="mostrarAnuncioYReiniciar()">💪 No te rindas, consigue el 10</button>
   </div>
+
   <p id="resultado"></p>
   <p id="puntuacion"></p>
+
+  <!-- Anuncio tipo pump (invisible hasta que se active) -->
+  <script id="pump-script" type="text/javascript" data-src="//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js"></script>
 
   <script>
     const panel = document.getElementById("panel");
@@ -141,9 +146,13 @@
       }
     });
 
-    boton.addEventListener("click", () => {
+    function mostrarAnuncioYReiniciar() {
+      const script = document.getElementById("pump-script");
+      if (!script.src) {
+        script.src = script.getAttribute("data-src");
+      }
       iniciarJuego();
-    });
+    }
 
     window.onload = iniciarJuego;
   </script>
