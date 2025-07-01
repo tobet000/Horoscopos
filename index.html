@@ -41,28 +41,37 @@
       transition: background-color 0.3s;
     }
 
-    #boton-reintentar {
+    #boton-reintentar, #boton-whatsapp {
       display: none;
+      margin: 15px auto 10px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #boton-reintentar {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      padding: 16px 30px;
-      font-size: 1.2rem;
       background: radial-gradient(circle, #ffd700, #ff6a00);
       color: #000;
-      font-weight: bold;
-      border: 3px solid #fff;
-      border-radius: 10px;
       box-shadow: 0 0 15px #ff0, 0 0 30px #f80;
       animation: parpadeo 1s infinite, rebote 1s infinite alternate;
-      cursor: pointer;
       z-index: 10;
+    }
+
+    #boton-whatsapp {
+      background-color: #25D366;
+      color: #fff;
     }
 
     @keyframes parpadeo {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
+      50% { opacity: 0.6; }
     }
 
     @keyframes rebote {
@@ -73,12 +82,21 @@
     #resultado, #puntuacion {
       margin: 10px 0;
     }
+
+    #imagen-vikingo {
+      max-width: 200px;
+      margin-top: 10px;
+      display: none;
+      border-radius: 10px;
+      border: 2px solid #ccc;
+      box-shadow: 0 0 10px #000;
+    }
   </style>
 </head>
 <body>
 
   <p class="mensaje-anuncio">
-    😊 Si se abre una pestaña o anuncio, simplemente ciérralo para seguir disfrutando del juego. ¡Gracias por tu paciencia!
+    😊 Si se abre una pestaña o anuncio, simplemente ciérralo o aprieta atrás para seguir disfrutando del juego. ¡Gracias por tu paciencia!
   </p>
 
   <h1>Haz clic cuando el panel se vuelva VERDE</h1>
@@ -91,18 +109,42 @@
   <p id="resultado"></p>
   <p id="puntuacion"></p>
 
-  <!-- Anuncio tipo pump (invisible hasta que se active) -->
+  <img id="imagen-vikingo" src="" alt="Reacción del vikingo" />
+
+  <br>
+  <button id="boton-whatsapp" onclick="compartirEnWhatsApp()">📲 Compartir en WhatsApp</button>
+
+  <!-- Música medieval -->
+  <audio id="musica" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_9c4f3e3f3e.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <!-- Anuncio tipo pump -->
   <script id="pump-script" type="text/javascript" data-src="//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js"></script>
 
   <script>
     const panel = document.getElementById("panel");
     const boton = document.getElementById("boton-reintentar");
+    const botonWhatsapp = document.getElementById("boton-whatsapp");
     const resultado = document.getElementById("resultado");
     const puntuacion = document.getElementById("puntuacion");
+    const imgVikingo = document.getElementById("imagen-vikingo");
+    const musica = document.getElementById("musica");
 
     let puedeClic = false;
     let tiempoInicio;
     let timeoutID;
+    let ultimoPuntaje = 0;
+    let musicaIniciada = false;
+
+    document.body.addEventListener("click", () => {
+      if (!musicaIniciada) {
+        musica.play().catch(() => {});
+        musica.volume = 0.4;
+        musicaIniciada = true;
+      }
+    }, { once: true });
 
     function calcularPuntuacion(ms) {
       if (ms < 200) return 10;
@@ -123,6 +165,8 @@
       resultado.textContent = "Espera que se ponga verde...";
       puntuacion.textContent = "";
       boton.style.display = "none";
+      botonWhatsapp.style.display = "none";
+      imgVikingo.style.display = "none";
       puedeClic = false;
 
       timeoutID = setTimeout(() => {
@@ -135,16 +179,29 @@
     panel.addEventListener("click", () => {
       if (!puedeClic) {
         resultado.textContent = "¡Muy pronto! Espera al verde.";
-        boton.style.display = "block";
+        mostrarReacciones(0);
       } else {
         const tiempo = Date.now() - tiempoInicio;
         const puntos = calcularPuntuacion(tiempo);
         resultado.textContent = `¡Tu tiempo fue: ${tiempo} ms!`;
         puntuacion.textContent = `🏅 Puntuación: ${puntos}/10`;
+        ultimoPuntaje = puntos;
         puedeClic = false;
-        boton.style.display = "block";
+        mostrarReacciones(puntos);
       }
     });
+
+    function mostrarReacciones(puntos) {
+      boton.style.display = "block";
+      botonWhatsapp.style.display = "inline-block";
+      imgVikingo.style.display = "block";
+
+      if (puntos >= 9) {
+        imgVikingo.src = "https://images.pexels.com/photos/17794822/pexels-photo-17794822.jpeg?auto=compress&cs=tinysrgb&h=320";
+      } else {
+        imgVikingo.src = "https://images.pexels.com/photos/5019060/pexels-photo-5019060.jpeg?auto=compress&cs=tinysrgb&h=320";
+      }
+    }
 
     function mostrarAnuncioYReiniciar() {
       const script = document.getElementById("pump-script");
@@ -152,6 +209,13 @@
         script.src = script.getAttribute("data-src");
       }
       iniciarJuego();
+    }
+
+    function compartirEnWhatsApp() {
+      const url = encodeURIComponent(window.location.href);
+      const texto = `¡Saqué ${ultimoPuntaje}/10 en el Reto de Reflejos! 💥 ¿Puedes superarme?\nJuega aquí: ${url}`;
+      const enlace = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+      window.open(enlace, "_blank");
     }
 
     window.onload = iniciarJuego;
