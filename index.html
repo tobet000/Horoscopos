@@ -9,13 +9,23 @@
       background-color: #111;
       color: #fff;
       text-align: center;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
     }
 
+    .mensaje-anuncio {
+      font-size: 0.95rem;
+      color: #ccc;
+      background: #222;
+      padding: 10px 15px;
+      margin: 0;
+      border-bottom: 1px solid #444;
+      font-style: italic;
+    }
+
     h1 {
-      margin-top: 40px;
+      margin-top: 30px;
     }
 
     #container-panel {
@@ -66,6 +76,10 @@
   </style>
 </head>
 <body>
+
+  <p class="mensaje-anuncio">
+    😊 Si se abre una pestaña o anuncio, simplemente ciérralo para seguir disfrutando del juego. ¡Gracias por tu paciencia!
+  </p>
 
   <h1>Haz clic cuando el panel se vuelva VERDE</h1>
   <div id="container-panel">
@@ -128,12 +142,6 @@
     });
 
     boton.addEventListener("click", () => {
-      // Inserta el anuncio justo antes de reiniciar
-      const scriptAnuncio = document.createElement("script");
-      scriptAnuncio.type = "text/javascript";
-      scriptAnuncio.src = "//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js";
-      document.body.appendChild(scriptAnuncio);
-
       iniciarJuego();
     });
 
