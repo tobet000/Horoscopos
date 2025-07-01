@@ -1,78 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Horóscopos Lobavle</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de Reflejos</title>
   <style>
-    body{margin:0;font-family:'Segoe UI',sans-serif;
-      background:#141E30;color:#fff;text-align:center;
-      background-image:
-        radial-gradient(#fff2 1px,transparent 1px),
-        radial-gradient(#fff1 1px,transparent 1px);
-      background-size:40px 40px;background-position:0 0,20px 20px;
-      animation:estrellas 60s linear infinite;}
-    @keyframes estrellas{to{background-position:1000px 1000px,1020px 1020px;}}
-    .container{padding:2rem;}
-    h1{font-size:2.2rem;margin-bottom:1rem;}
-    select{padding:.8rem;font-size:1rem;border-radius:8px;border:none;margin-top:1rem;}
-    .resultado{margin-top:2rem;background:rgba(255,255,255,.1);
-      padding:1.5rem;border-radius:12px;backdrop-filter:blur(8px);
-      box-shadow:0 0 10px rgba(255,255,255,.2);}
-    .frase-final{margin-top:3rem;font-size:1.3rem;font-style:italic;
-      opacity:.9;color:#ffd700;}
+    body {
+      background-color: #111;
+      color: #fff;
+      text-align: center;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1 { margin-top: 40px; }
+    #panel {
+      width: 90vw;
+      height: 60vh;
+      margin: 30px auto;
+      background-color: red;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>✨ Horóscopos Lobavle ✨</h1>
-    <select id="signo">
-      <option value="">Selecciona tu signo</option>
-      <option value="aries">♈ Aries</option>
-      <option value="taurus">♉ Tauro</option>
-      <option value="gemini">♊ Géminis</option>
-      <option value="cancer">♋ Cáncer</option>
-      <option value="leo">♌ Leo</option>
-      <option value="virgo">♍ Virgo</option>
-      <option value="libra">♎ Libra</option>
-      <option value="scorpio">♏ Escorpio</option>
-      <option value="sagittarius">♐ Sagitario</option>
-      <option value="capricorn">♑ Capricornio</option>
-      <option value="aquarius">♒ Acuario</option>
-      <option value="pisces">♓ Piscis</option>
-    </select>
-
-    <div class="resultado" id="resultado">
-      <p>Selecciona tu signo para ver el horóscopo de hoy ✨</p>
-    </div>
-    <div class="frase-final">🌞 Sonríele a la vida 🌞</div>
-  </div>
+  <h1>Haz clic cuando el panel se vuelva VERDE</h1>
+  <div id="panel"></div>
+  <p id="resultado"></p>
+  <p id="puntuacion"></p>
 
   <script>
-    const sel = document.getElementById('signo');
-    const out = document.getElementById('resultado');
+    const panel = document.getElementById("panel");
+    const resultado = document.getElementById("resultado");
+    const puntuacion = document.getElementById("puntuacion");
+    let puedeClic = false;
+    let tiempoInicio;
 
-    sel.addEventListener('change', () => {
-      const signo = sel.value;
-      if (!signo) return;
-      out.innerHTML = '<p>Consultando las estrellas... 🔮</p>';
+    function calcularPuntuacion(tiempo) {
+      if (tiempo < 200) return 10;
+      else if (tiempo < 250) return 9;
+      else if (tiempo < 300) return 8;
+      else if (tiempo < 400) return 7;
+      else if (tiempo < 500) return 6;
+      else if (tiempo < 600) return 5;
+      else if (tiempo < 700) return 4;
+      else if (tiempo < 800) return 3;
+      else if (tiempo < 1000) return 2;
+      else return 1;
+    }
 
-      fetch(`https://ohmanda.com/api/horoscope/${signo}/`)
-        .then(r => {
-          if (!r.ok) throw new Error();
-          return r.json();
-        })
-        .then(json => {
-          out.innerHTML = `
-            <p><strong>${signo[0].toUpperCase() + signo.slice(1)}</strong></p>
-            <p>${json.horoscope}</p>
-            <p><small>Fecha: ${json.date}</small></p>
-          `;
-        })
-        .catch(() => {
-          out.innerHTML = `<p>Algo salió mal. Intenta de nuevo más tarde 🕯️</p>`;
-        });
+    function iniciarJuego() {
+      resultado.textContent = "Espera el color verde...";
+      puntuacion.textContent = "";
+      panel.style.backgroundColor = "red";
+      puedeClic = false;
+
+      const delay = Math.random() * 3000 + 1000;
+
+      setTimeout(() => {
+        panel.style.backgroundColor = "green";
+        tiempoInicio = Date.now();
+        puedeClic = true;
+      }, delay);
+    }
+
+    panel.addEventListener("click", () => {
+      if (!puedeClic) {
+        resultado.textContent = "¡Demasiado pronto! Espera al verde.";
+        iniciarJuego();
+      } else {
+        const tiempoReaccion = Date.now() - tiempoInicio;
+        const score = calcularPuntuacion(tiempoReaccion);
+        resultado.textContent = `¡Tu tiempo fue: ${tiempoReaccion} ms!`;
+        puntuacion.textContent = `🏅 Puntuación: ${score}/10`;
+        puedeClic = false;
+        setTimeout(iniciarJuego, 2500);
+      }
     });
+
+    iniciarJuego();
   </script>
 </body>
 </html>
