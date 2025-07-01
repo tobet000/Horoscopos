@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Juego de Reflejos</title>
   <style>
     body {
@@ -13,7 +13,15 @@
       margin: 0;
       padding: 0;
     }
-    h1 { margin-top: 40px; }
+
+    h1 {
+      margin-top: 40px;
+    }
+
+    #container-panel {
+      position: relative;
+    }
+
     #panel {
       width: 90vw;
       height: 60vh;
@@ -22,64 +30,115 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
+    #boton-reintentar {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 16px 30px;
+      font-size: 1.2rem;
+      background: radial-gradient(circle, #ffd700, #ff6a00);
+      color: #000;
+      font-weight: bold;
+      border: 3px solid #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ff0, 0 0 30px #f80;
+      animation: parpadeo 1s infinite, rebote 1s infinite alternate;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    @keyframes parpadeo {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes rebote {
+      0% { transform: translate(-50%, -52%) scale(1); }
+      100% { transform: translate(-50%, -48%) scale(1.05); }
+    }
+
+    #resultado, #puntuacion {
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
+
   <h1>Haz clic cuando el panel se vuelva VERDE</h1>
-  <div id="panel"></div>
+  <div id="container-panel">
+    <div id="panel"></div>
+    <button id="boton-reintentar">💪 No te rindas, consigue el 10</button>
+  </div>
   <p id="resultado"></p>
   <p id="puntuacion"></p>
 
   <script>
     const panel = document.getElementById("panel");
+    const boton = document.getElementById("boton-reintentar");
     const resultado = document.getElementById("resultado");
     const puntuacion = document.getElementById("puntuacion");
+
     let puedeClic = false;
     let tiempoInicio;
+    let timeoutID;
 
-    function calcularPuntuacion(tiempo) {
-      if (tiempo < 200) return 10;
-      else if (tiempo < 250) return 9;
-      else if (tiempo < 300) return 8;
-      else if (tiempo < 400) return 7;
-      else if (tiempo < 500) return 6;
-      else if (tiempo < 600) return 5;
-      else if (tiempo < 700) return 4;
-      else if (tiempo < 800) return 3;
-      else if (tiempo < 1000) return 2;
-      else return 1;
+    function calcularPuntuacion(ms) {
+      if (ms < 200) return 10;
+      if (ms < 250) return 9;
+      if (ms < 300) return 8;
+      if (ms < 400) return 7;
+      if (ms < 500) return 6;
+      if (ms < 600) return 5;
+      if (ms < 700) return 4;
+      if (ms < 800) return 3;
+      if (ms < 1000) return 2;
+      return 1;
     }
 
     function iniciarJuego() {
-      resultado.textContent = "Espera el color verde...";
-      puntuacion.textContent = "";
+      clearTimeout(timeoutID);
       panel.style.backgroundColor = "red";
+      resultado.textContent = "Espera que se ponga verde...";
+      puntuacion.textContent = "";
+      boton.style.display = "none";
       puedeClic = false;
 
-      const delay = Math.random() * 3000 + 1000;
-
-      setTimeout(() => {
+      timeoutID = setTimeout(() => {
         panel.style.backgroundColor = "green";
         tiempoInicio = Date.now();
         puedeClic = true;
-      }, delay);
+      }, Math.random() * 3000 + 1000);
     }
 
     panel.addEventListener("click", () => {
       if (!puedeClic) {
-        resultado.textContent = "¡Demasiado pronto! Espera al verde.";
-        iniciarJuego();
+        resultado.textContent = "¡Muy pronto! Espera al verde.";
+        boton.style.display = "block";
       } else {
-        const tiempoReaccion = Date.now() - tiempoInicio;
-        const score = calcularPuntuacion(tiempoReaccion);
-        resultado.textContent = `¡Tu tiempo fue: ${tiempoReaccion} ms!`;
-        puntuacion.textContent = `🏅 Puntuación: ${score}/10`;
+        const tiempo = Date.now() - tiempoInicio;
+        const puntos = calcularPuntuacion(tiempo);
+        resultado.textContent = `¡Tu tiempo fue: ${tiempo} ms!`;
+        puntuacion.textContent = `🏅 Puntuación: ${puntos}/10`;
         puedeClic = false;
-        setTimeout(iniciarJuego, 2500);
+        boton.style.display = "block";
       }
     });
 
-    iniciarJuego();
+    boton.addEventListener("click", () => {
+      // Inserta el anuncio justo antes de reiniciar
+      const scriptAnuncio = document.createElement("script");
+      scriptAnuncio.type = "text/javascript";
+      scriptAnuncio.src = "//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js";
+      document.body.appendChild(scriptAnuncio);
+
+      iniciarJuego();
+    });
+
+    window.onload = iniciarJuego;
   </script>
+
 </body>
 </html>
