@@ -93,6 +93,7 @@
       border-radius: 4px;
     }
   </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
   <div class="cosmic-frame">
@@ -104,25 +105,18 @@
         <div class="pixel llama"></div><div></div><div class="pixel llama"></div><div></div><div class="pixel llama"></div>
         <div></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div></div>
         <div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div><div class="pixel llama"></div>
-
-        <!-- 30 filas de cera -->
-        <!-- Copia esta línea 30 veces para que quede larga -->
+        <!-- Repite esta línea de cera 30 veces para hacerlo más largo -->
         <div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div><div class="pixel cera"></div>
-        <!-- ...continúa repitiendo según desees... -->
-
         <div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div><div class="pixel base"></div>
       </div>
     </div>
 
-    <button id="encender" onclick="encenderVeladora()">Encender veladora</button>
+    <button id="encender">Encender veladora</button>
     <div id="contador">Estas personas han encendido su veladora: <span id="conteo">0</span></div>
-
     <input type="text" id="inputOracion" placeholder="Escribe tu oración..." maxlength="120"><br>
     <button id="publicar">Guardar oración</button>
     <div id="oracion-privada"></div>
-
     <img id="bandera" src="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" alt="Bandera Palestina">
-
     <div id="esperanza">"Una luz encendida es más fuerte que la oscuridad. Que esta llama sea memoria, resistencia y esperanza."</div>
 
     <p style="font-size: 0.85em; color: #aaa; margin-top: 25px;">
@@ -147,7 +141,7 @@
   document.getElementById('conteo').textContent = conteo;
   document.getElementById('oracion-privada').textContent = oracion ? `"${oracion}"` : '';
 
-  function encenderVeladora() {
+  document.getElementById('encender').addEventListener('click', () => {
     if (encendida) return;
     encendida = true;
 
@@ -159,12 +153,7 @@
     conteo++;
     localStorage.setItem('conteoVelas', conteo);
     document.getElementById('conteo').textContent = conteo;
-
-    const adScript = document.createElement('script');
-    adScript.type = 'text/javascript';
-    adScript.src = '//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js';
-    document.body.appendChild(adScript);
-  }
+  });
 
   document.getElementById('publicar').addEventListener('click', () => {
     const input = document.getElementById('inputOracion');
@@ -190,5 +179,9 @@
     }
   }
 </script>
+
+<!-- Código del anuncio Adsterra agregado directamente -->
+<script type='text/javascript' src='//pl27052028.profitableratecpm.com/9f/bf/39/9fbf395ee0077c42cad5d2ec3e77eb69.js'></script>
+
 </body>
 </html>
